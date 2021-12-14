@@ -99,12 +99,16 @@ class Print {
                     spaceDay += ' '
                 }
                 let daysToPrint = ''
-                for (let i = 0; i < statistics[month].workedDaysInMonth.length; i++) {
-                    const day = statistics[month].workedDaysInMonth[i]
-
-                    if (errors[month].incongruousDaysInMonth.indexOf(day) === -1) daysToPrint += `${this.GREEN}${day}`
-                    else daysToPrint += `${this.RED}${day}`
-                    if (i !== statistics[month].workedDaysInMonth.length - 1) daysToPrint += `${this.RESET_COLOR},`
+                let j = 0
+                for (let i = 0; i <= 31; i++) {
+                    let day = i.toString()
+                    day = day.length === 1 ? `0${day}` : day
+                    if (statistics[month].workedDaysInMonth.indexOf(day) !== -1) {
+                        if (errors[month].incongruousDaysInMonth.indexOf(day) === -1) daysToPrint += `${this.GREEN}${day}`
+                        else daysToPrint += `${this.RED}${day}`
+                        if (j !== statistics[month].workedDaysInMonth.length - 1) daysToPrint += `${this.RESET_COLOR},`
+                        j++
+                    }
                 }
 
                 daysToPrint += `${this.RESET_COLOR}`
@@ -212,7 +216,7 @@ class Print {
                         const lunchMax = 1 * 60 * 60 * 1000 + 30 * 60 * 1000
                         const nulo = `${this.RED}*****${this.RESET_COLOR}`
                         const turn = 4 * 60 * 60 * 1000 + 24 * 60 * 1000
-                        const lunchMin = 1 * 60 * 60 * 1000 + 15 * 60 *1000
+                        const lunchMin = 1 * 60 * 60 * 1000 + 15 * 60 * 1000
                         const point1 = statistics[month][day][1] ? this.parseHour(statistics[month][day][1]) : nulo
                         let point2 = statistics[month][day][2] ? this.parseHour(statistics[month][day][2]) : nulo
                         let point3 = statistics[month][day][3] ? this.parseHour(statistics[month][day][3]) : nulo
@@ -230,19 +234,19 @@ class Print {
                         let lunch
 
                         if (toDay === dayToCompare) {
-                            if (point2 === nulo) {
+                            if (point1 !== nulo && point2 === nulo && point3 === nulo && point4 === nulo) {
                                 statistics[month][day][2] = statistics[month][day][1] + turn
                                 point2 = this.parseHour(statistics[month][day][2])
                                 point2 = `${this.CYAN}${point2}${this.RESET_COLOR}`
                             }
 
-                            if (point3 === nulo) {
+                            if (point1 !== nulo && point2 !== nulo && point3 === nulo && point4 === nulo) {
                                 statistics[month][day][3] = statistics[month][day][2] + lunchMin
                                 point3 = this.parseHour(statistics[month][day][3])
                                 point3 = `${this.CYAN}${point3}${this.RESET_COLOR}`
                             }
 
-                            if (point4 === nulo) {
+                            if (point1 !== nulo && point2 !== nulo && point3 !== nulo && point4 === nulo) {
                                 point4 = statistics[month][day][3] + workDay + statistics[month][day][1] - statistics[month][day][2]
                                 bank = - statistics[month][day][1] + statistics[month][day][2] - statistics[month][day][3] + point4 - workDay
                                 point4 = this.parseHour(point4)
