@@ -232,18 +232,25 @@ class Print {
                         let dayToPrint = `${this.GREEN}${day}${this.RESET_COLOR}`
                         let bank = statistics[month][day].bankHoursInDay
                         let lunch
+                        let suggestionLunch = false
+                        let suggestionBank = false
 
                         if (toDay === dayToCompare) {
                             if (point1 !== nulo && point2 === nulo && point3 === nulo && point4 === nulo) {
                                 statistics[month][day][2] = statistics[month][day][1] + turn
                                 point2 = this.parseHour(statistics[month][day][2])
                                 point2 = `${this.CYAN}${point2}${this.RESET_COLOR}`
+                                suggestionLunch = true
+                                suggestionBank = true
+
                             }
 
                             if (point1 !== nulo && point2 !== nulo && point3 === nulo && point4 === nulo) {
                                 statistics[month][day][3] = statistics[month][day][2] + lunchMin
                                 point3 = this.parseHour(statistics[month][day][3])
                                 point3 = `${this.CYAN}${point3}${this.RESET_COLOR}`
+                                suggestionLunch = true
+                                suggestionBank = true
                             }
 
                             if (point1 !== nulo && point2 !== nulo && point3 !== nulo && point4 === nulo) {
@@ -252,11 +259,15 @@ class Print {
                                 point4 = this.parseHour(point4)
                                 point4 = `${this.CYAN}${point4}${this.RESET_COLOR}`
                                 statistics[month][day].lunchTimeInDay = statistics[month][day][3] - statistics[month][day][2]
+                                suggestionBank = true
                             }
                         }
                         if (point1 === nulo || point2 === nulo || point3 === nulo || point4 === nulo)
                             dayToPrint = `${this.RED}${day}${this.RESET_COLOR}`
-                        if (bank > 0) {
+
+                        if (suggestionBank)
+                            bank = `${this.CYAN}${this.parseHour(bank)}${this.RESET_COLOR}`
+                        else if (bank > 0) {
                             if (bank > margin) bank = `${this.GREEN}${this.parseHour(bank)}${this.RESET_COLOR}`
                             else bank = this.parseHour(bank)
                         }
@@ -267,10 +278,14 @@ class Print {
                             }
                             else bank = this.parseHour(bank)
                         }
-                        if (statistics[month][day].lunchTimeInDay > lunchMax)
-                            lunch = `${this.YELLOW}${this.parseHour(statistics[month][day].lunchTimeInDay)}${this.RESET_COLOR}`
+                        lunch = this.parseHour(statistics[month][day].lunchTimeInDay)
+                        if (suggestionLunch)
+                            lunch = `${this.CYAN}${lunch}${this.RESET_COLOR}`
+                        else if (statistics[month][day].lunchTimeInDay > lunchMax)
+                            lunch = `${this.YELLOW}${lunch}${this.RESET_COLOR}`
                         else
-                            lunch = `${this.GREEN}${this.parseHour(statistics[month][day].lunchTimeInDay)}${this.RESET_COLOR}`
+                            lunch = `${this.GREEN}${lunch}${this.RESET_COLOR}`
+
 
                         if (daysPrinted === logMonth) {
                             console.log(
